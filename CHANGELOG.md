@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.2
+
+* Improved Windows setup feedback for missing FFmpeg
+* Added optional winget-based FFmpeg installation prompt
+* Added FFmpeg preflight warning before starting the bot on Windows
+* Updated Windows documentation
+
 ## 0.1.1
 
 - Added `.dockerignore` for safer Docker builds

@@ -53,7 +53,7 @@ Access is limited to configured Telegram User IDs. Optional AI summaries can be 
 2. Enter `TELEGRAM_BOT_TOKEN` and `TELEGRAM_ALLOWED_USER_IDS` when prompted.
 3. Double-click `run-windows.bat`.
 
-The setup script creates `.venv`, installs dependencies, and creates `.env` from `.env.example` if needed.
+The setup script creates `.venv`, installs dependencies, creates `.env` from `.env.example` if needed, and checks FFmpeg. If FFmpeg is missing, it shows install instructions and can optionally try to install it with winget.
 
 ## Quick Start Linux
 

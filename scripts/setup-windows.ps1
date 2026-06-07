@@ -80,6 +80,65 @@ function Set-EnvFileValue {
     Set-Content -LiteralPath $Path -Value $newLines -Encoding UTF8
 }
 
+function Test-FFmpegAvailable {
+    return [bool](Get-Command ffmpeg -ErrorAction SilentlyContinue)
+}
+
+function Write-FFmpegInstallInstructions {
+    Write-Host ""
+    Write-Warning "FFmpeg is required for audio/video conversion."
+    Write-Host "The bot can start without it, but transcription of Telegram media will fail."
+    Write-Host ""
+    Write-Host "Recommended install command:"
+    Write-Host "  winget install Gyan.FFmpeg"
+    Write-Host ""
+    Write-Host "After installing FFmpeg, close and reopen the terminal, then run:"
+    Write-Host "  ffmpeg -version"
+    Write-Host "  run-windows.bat"
+}
+
+function Confirm-Yes {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Answer
+    )
+
+    return $Answer.Trim().ToLowerInvariant() -in @("y", "yes")
+}
+
+function Invoke-FFmpegSetupCheck {
+    if (Test-FFmpegAvailable) {
+        Write-Host "FFmpeg found."
+        return
+    }
+
+    Write-FFmpegInstallInstructions
+
+    $winget = Get-Command winget -ErrorAction SilentlyContinue
+    if (-not $winget) {
+        Write-Host ""
+        Write-Host "winget was not found. Install FFmpeg manually, then reopen the terminal."
+        return
+    }
+
+    $answer = Read-Host "Install FFmpeg with winget now? [y/N]"
+    if (Confirm-Yes -Answer $answer) {
+        & winget install Gyan.FFmpeg
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "winget did not complete successfully. Install FFmpeg manually if needed."
+        }
+        Write-Host ""
+        Write-Host "Close and reopen this terminal before starting the bot, then verify with ``ffmpeg -version``."
+        return
+    }
+
+    Write-Host ""
+    Write-Host "Skipping FFmpeg installation. Install it later with:"
+    Write-Host "  winget install Gyan.FFmpeg"
+    Write-Host "Then close and reopen the terminal and run:"
+    Write-Host "  ffmpeg -version"
+}
+
 Write-Host "Setting up Telegram Transcription Bot..."
 
 Invoke-Python -Arguments @("--version")
@@ -98,6 +157,8 @@ if ($LASTEXITCODE -ne 0) { throw "pip upgrade failed." }
 
 & $venvPython -m pip install -r requirements.txt
 if ($LASTEXITCODE -ne 0) { throw "Dependency installation failed." }
+
+Invoke-FFmpegSetupCheck
 
 if (-not (Test-Path -LiteralPath ".env")) {
     Copy-Item -LiteralPath ".env.example" -Destination ".env"
