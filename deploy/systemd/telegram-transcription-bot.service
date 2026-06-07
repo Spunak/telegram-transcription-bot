@@ -1,0 +1,17 @@
+[Unit]
+Description=Telegram Transcription Bot
+After=network.target
+
+[Service]
+Type=simple
+User=bot
+Group=bot
+WorkingDirectory=/opt/telegram-transcription-bot
+EnvironmentFile=/opt/telegram-transcription-bot/.env
+ExecStart=/opt/telegram-transcription-bot/.venv/bin/python -m src.main
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+

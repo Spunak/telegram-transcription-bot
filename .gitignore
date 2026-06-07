@@ -1,0 +1,43 @@
+# Local env files
+.env
+*.env
+!.env.example
+
+# Private local archive
+_private_local_archive_DO_NOT_COMMIT/
+
+# Python
+__pycache__/
+*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Runtime/temp
+tmp/
+logs/
+*.log
+
+# Local data
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE/editor
+.vscode/
+.idea/
+
+# OS junk
+.DS_Store
+Thumbs.db
+Desktop.ini
