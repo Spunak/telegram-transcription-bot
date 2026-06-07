@@ -107,11 +107,14 @@ OPENAI_API_KEY=
 ENABLE_SUMMARY=false
 SUMMARY_MODEL=
 TRANSCRIPTION_MODEL=turbo
+WHISPER_LANGUAGE=auto
 MAX_FILE_SIZE_MB=25
 LOG_LEVEL=INFO
 ```
 
 `OPENAI_API_KEY` is not required for transcription. It is only required when summaries are enabled.
+
+`WHISPER_LANGUAGE=auto` enables automatic language detection. Set `WHISPER_LANGUAGE=de`, `WHISPER_LANGUAGE=en`, or another supported language code to force a specific transcription language.
 
 ## Transcription Models
 
@@ -171,6 +174,7 @@ If summary is enabled without the required OpenAI settings, the bot exits with a
 
 - Never commit `.env`, API keys, bot tokens, cookies, chat IDs, Telegram User IDs, or private logs.
 - Keep `_private_local_archive_DO_NOT_COMMIT/` local only.
+- `.dockerignore` keeps local secrets, private archives, caches, logs, and data files out of Docker build contexts.
 - Review `git status --short` and `git diff` before publishing.
 - Use Telegram User IDs for authorization, not IP addresses.
 - Keep `LOG_LEVEL=INFO` for normal use.

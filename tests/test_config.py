@@ -2,7 +2,7 @@ import os
 import unittest
 from unittest.mock import patch
 
-from src.config import Settings, parse_allowed_user_ids
+from src.config import Settings, parse_allowed_user_ids, resolve_transcription_model
 
 
 class ConfigTests(unittest.TestCase):
@@ -30,6 +30,8 @@ class ConfigTests(unittest.TestCase):
         self.assertEqual(settings.telegram_allowed_user_ids, {10, 20})
         self.assertEqual(settings.max_media_minutes, 15)
         self.assertEqual(settings.max_file_mb, 25)
+        self.assertEqual(settings.transcription_model, "turbo")
+        self.assertEqual(settings.whisper_language, "auto")
         self.assertEqual(settings.missing_required_values(), [])
 
     def test_missing_required_values_require_allowlist(self) -> None:
@@ -50,6 +52,25 @@ class ConfigTests(unittest.TestCase):
         with patch.dict(os.environ, env, clear=True):
             settings = Settings.from_env(load_env_file=False)
         self.assertEqual(settings.missing_required_values(), ["OPENAI_API_KEY", "SUMMARY_MODEL"])
+
+    def test_resolve_transcription_model_defaults_to_turbo(self) -> None:
+        with patch.dict(os.environ, {}, clear=True):
+            self.assertEqual(resolve_transcription_model(), "turbo")
+
+    def test_resolve_transcription_model_keeps_legacy_local_model(self) -> None:
+        env = {"OPENAI_TRANSCRIPTION_MODEL": "large-v3"}
+        with patch.dict(os.environ, env, clear=True):
+            self.assertEqual(resolve_transcription_model(), "large-v3")
+
+    def test_resolve_transcription_model_ignores_legacy_openai_api_models(self) -> None:
+        for legacy_model in ("whisper-1", "gpt-4o-mini-transcribe"):
+            with self.subTest(legacy_model=legacy_model):
+                with patch.dict(
+                    os.environ,
+                    {"OPENAI_TRANSCRIPTION_MODEL": legacy_model},
+                    clear=True,
+                ):
+                    self.assertEqual(resolve_transcription_model(), "turbo")
 
 
 if __name__ == "__main__":

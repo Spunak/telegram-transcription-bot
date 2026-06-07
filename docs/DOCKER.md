@@ -33,4 +33,12 @@ docker compose down
 - `OPENAI_API_KEY`
 - `SUMMARY_MODEL`
 
+## Optional Runtime Variables
+
+- `TRANSCRIPTION_MODEL` changes the local faster-whisper model. The default is `turbo`.
+- `WHISPER_LANGUAGE` controls transcription language. The default is `auto` for automatic detection; set `de`, `en`, or another supported language code to force one language.
+- `MAX_FILE_SIZE_MB`
+- `MAX_MEDIA_MINUTES`
+- `LOG_LEVEL`
+
 `docker-compose.yml` does not contain real secrets. Values come from your local `.env` or the environment where Compose runs.

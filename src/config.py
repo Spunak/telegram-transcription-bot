@@ -82,7 +82,7 @@ def resolve_transcription_model() -> str:
     if legacy_model and not (legacy_lower.startswith("gpt-") or legacy_lower == "whisper-1"):
         return legacy_model
 
-    return "large-v3-turbo"
+    return "turbo"
 
 
 def normalize_summary_language(raw_value: str | None) -> str | None:
@@ -106,7 +106,7 @@ class Settings:
     openai_api_key: str
     enable_summary: bool
     telegram_allowed_user_ids: set[int] | None
-    openai_transcription_model: str
+    transcription_model: str
     whisper_device: str
     whisper_compute_type: str
     whisper_cpu_threads: int
@@ -177,12 +177,12 @@ class Settings:
             telegram_allowed_user_ids=parse_allowed_user_ids(
                 os.getenv("TELEGRAM_ALLOWED_USER_IDS")
             ),
-            openai_transcription_model=resolve_transcription_model(),
+            transcription_model=resolve_transcription_model(),
             whisper_device=os.getenv("WHISPER_DEVICE", "cpu").strip(),
             whisper_compute_type=os.getenv("WHISPER_COMPUTE_TYPE", "int8").strip(),
             whisper_cpu_threads=_parse_int("WHISPER_CPU_THREADS", 4),
             whisper_num_workers=_parse_int("WHISPER_NUM_WORKERS", 1),
-            whisper_language=os.getenv("WHISPER_LANGUAGE", "de").strip(),
+            whisper_language=os.getenv("WHISPER_LANGUAGE", "auto").strip(),
             whisper_beam_size=_parse_int("WHISPER_BEAM_SIZE", 5),
             whisper_best_of=_parse_int("WHISPER_BEST_OF", 1),
             whisper_vad_filter=_parse_bool("WHISPER_VAD_FILTER", True),

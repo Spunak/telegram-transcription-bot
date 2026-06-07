@@ -37,7 +37,7 @@ class TranscriptionService:
     def _get_model(self) -> WhisperModel:
         if self._model is None:
             self._model = WhisperModel(
-                self._settings.openai_transcription_model,
+                self._settings.transcription_model,
                 device=self._settings.whisper_device,
                 compute_type=self._settings.whisper_compute_type,
                 cpu_threads=self._settings.whisper_cpu_threads,
@@ -47,10 +47,14 @@ class TranscriptionService:
 
     def _transcribe_sync(self, audio_path: Path) -> str:
         model = self._get_model()
+        configured_language = self._settings.whisper_language.strip()
+        language_arg = (
+            None if configured_language.lower() in {"", "auto"} else configured_language
+        )
         try:
             segments, _info = model.transcribe(
                 str(audio_path),
-                language=self._settings.whisper_language,
+                language=language_arg,
                 beam_size=self._settings.whisper_beam_size,
                 best_of=self._settings.whisper_best_of,
                 vad_filter=self._settings.whisper_vad_filter,

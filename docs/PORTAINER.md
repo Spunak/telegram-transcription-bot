@@ -23,9 +23,12 @@ Optional summary settings:
 Optional runtime settings:
 
 - `TRANSCRIPTION_MODEL`
+- `WHISPER_LANGUAGE`
 - `MAX_FILE_SIZE_MB`
 - `MAX_MEDIA_MINUTES`
 - `LOG_LEVEL`
+
+`WHISPER_LANGUAGE` defaults to `auto` for automatic language detection. Set `de`, `en`, or another supported language code if you want to force one language.
 
 ## Deploy
 

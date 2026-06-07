@@ -99,7 +99,7 @@ class TelegramHandlers:
         )
         await message.reply_text(
             "ok\n"
-            f"model={self._settings.openai_transcription_model}\n"
+            f"model={self._settings.transcription_model}\n"
             f"allowlist={allowlist_status}\n"
             f"summary={'enabled' if self._settings.enable_summary else 'disabled'}"
         )
@@ -406,7 +406,7 @@ class TelegramHandlers:
                 transcript,
                 source_type=source_type,
                 source_url=source_url,
-                model=self._settings.openai_transcription_model,
+                model=self._settings.transcription_model,
             ),
             encoding="utf-8",
         )
