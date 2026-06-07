@@ -273,9 +273,7 @@ class TelegramHandlers:
                     download_result.downloaded_path,
                     job_dir / "audio.wav",
                 )
-                if summary_mode:
-                    await self._update_status(status_message, "Transcribing...")
-                transcript = await self._transcription_service.transcribe(wav_path)
+                transcript = await self._transcribe_with_status(status_message, wav_path)
                 if summary_mode:
                     summary_service = self._require_summary_service()
                     if not transcript.strip():
@@ -331,9 +329,7 @@ class TelegramHandlers:
                     input_path,
                     job_dir / "audio.wav",
                 )
-                if summary_mode:
-                    await self._update_status(status_message, "Transcribing...")
-                transcript = await self._transcription_service.transcribe(wav_path)
+                transcript = await self._transcribe_with_status(status_message, wav_path)
                 if summary_mode:
                     summary_service = self._require_summary_service()
                     if not transcript.strip():
@@ -420,6 +416,19 @@ class TelegramHandlers:
             raise SummaryError("Summary unavailable.")
         for chunk in chunk_text(cleaned, self._settings.telegram_message_chunk_size):
             await message.reply_text(chunk)
+
+    async def _transcribe_with_status(self, status_message: Message, audio_path: Path) -> str:
+        if not self._transcription_service.is_model_loaded():
+            await self._update_status(
+                status_message,
+                "Preparing transcription model: "
+                f"{self._settings.transcription_model}\n"
+                "First run may download the model and take several minutes...",
+            )
+            await self._transcription_service.prepare_model()
+
+        await self._update_status(status_message, "Transcribing...")
+        return await self._transcription_service.transcribe(audio_path)
 
     def _require_summary_service(self) -> SummaryService:
         if self._summary_service is None:

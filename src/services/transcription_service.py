@@ -19,6 +19,24 @@ class TranscriptionService:
         self._model: WhisperModel | None = None
         self._job_semaphore = asyncio.Semaphore(1)
 
+    def is_model_loaded(self) -> bool:
+        return self._model is not None
+
+    async def prepare_model(self) -> None:
+        try:
+            async with self._job_semaphore:
+                await asyncio.wait_for(
+                    asyncio.to_thread(self._get_model),
+                    timeout=self._settings.transcription_timeout_sec,
+                )
+        except asyncio.TimeoutError as exc:
+            raise TranscriptionError(
+                "Transcription model loading timed out.",
+                detail=str(exc),
+            ) from exc
+        except Exception as exc:
+            raise TranscriptionError("Transcription model failed to load.", detail=str(exc)) from exc
+
     async def transcribe(self, audio_path: Path) -> str:
         try:
             async with self._job_semaphore:

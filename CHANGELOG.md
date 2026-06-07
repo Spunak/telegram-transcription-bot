@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.3
+
+* Added clearer first-run transcription model loading status
+* Documented that the first transcription may take longer while the model downloads
+* Added optional Hugging Face environment settings documentation
+* Documented Windows unknown publisher warnings for unsigned batch files
+
 ## 0.1.2
 
 * Improved Windows setup feedback for missing FFmpeg

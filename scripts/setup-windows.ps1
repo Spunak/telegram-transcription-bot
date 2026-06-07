@@ -182,3 +182,4 @@ if (-not $tokenPlain -or -not $allowedUserIds) {
 }
 
 Write-Host "Setup complete. Use run-windows.bat to start the bot."
+Write-Host "If Windows shows an unknown publisher warning for the batch files, see docs/WINDOWS.md."

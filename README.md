@@ -113,6 +113,8 @@ ENABLE_SUMMARY=false
 SUMMARY_MODEL=
 TRANSCRIPTION_MODEL=turbo
 WHISPER_LANGUAGE=auto
+HF_TOKEN=
+HF_HUB_DISABLE_SYMLINKS_WARNING=1
 MAX_FILE_SIZE_MB=25
 LOG_LEVEL=INFO
 ```
@@ -144,6 +146,29 @@ Common model choices:
 | `distil-large-v3` | Fast | High | Good speed/accuracy balance on supported setups |
 
 faster-whisper can also load supported Hugging Face or CTranslate2 model names and local model paths. Beginners should start with `turbo`, then switch to `small` for lower resource use or `large-v3` for maximum accuracy.
+
+## First Run Model Download
+
+The first transcription may take longer because faster-whisper may download the selected model from Hugging Face and load it into memory. Later transcriptions are faster because the model is cached locally. Larger models like `large-v3` need more time and disk space.
+
+For a quick test, set:
+
+```env
+TRANSCRIPTION_MODEL=base
+```
+
+For most normal use, keep:
+
+```env
+TRANSCRIPTION_MODEL=turbo
+```
+
+Optional Hugging Face settings:
+
+- `HF_TOKEN` is only useful for higher Hugging Face Hub rate limits.
+- `HF_HUB_DISABLE_SYMLINKS_WARNING=1` can suppress the common Windows cache symlink warning.
+
+Keep Hugging Face tokens local in `.env`; do not commit real token values.
 
 ## Telegram User ID Whitelist
 
@@ -178,6 +203,7 @@ If summary is enabled without the required OpenAI settings, the bot exits with a
 ## Security Notes
 
 - Never commit `.env`, API keys, bot tokens, cookies, chat IDs, Telegram User IDs, or private logs.
+- Never commit real Hugging Face tokens in `HF_TOKEN`.
 - Keep `_private_local_archive_DO_NOT_COMMIT/` local only.
 - `.dockerignore` keeps local secrets, private archives, caches, logs, and data files out of Docker build contexts.
 - Review `git status --short` and `git diff` before publishing.
